@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0b1e">
+  <title>AniGuess</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <h1 class="logo">Ani<span>Guess</span></h1>
+      <p class="puzzle-number" id="puzzle-number"></p>
+    </header>
+
+    <p class="loading" id="loading">Loading…</p>
+
+    <section class="game hidden" id="game">
+      <p class="guesses-left" id="guesses-left"></p>
+      <ol class="clues" id="clues"></ol>
+      <div class="anime-reveal hidden" id="anime-reveal"></div>
+
+      <form class="guess-form" id="guess-form" autocomplete="off">
+        <div class="input-wrap">
+          <input type="text" id="guess-input" placeholder="Type a character name…"
+                 aria-label="Your guess" aria-autocomplete="list" aria-controls="suggestions"
+                 autocapitalize="off" spellcheck="false">
+          <ul class="suggestions hidden" id="suggestions" role="listbox"></ul>
+        </div>
+        <button type="submit" id="guess-button" disabled>Guess</button>
+      </form>
+
+      <ul class="past-guesses" id="past-guesses"></ul>
+    </section>
+
+    <section class="result hidden" id="result">
+      <p class="result-title" id="result-title"></p>
+      <p class="result-name" id="result-name"></p>
+      <p class="result-anime" id="result-anime"></p>
+      <p class="result-grid" id="result-grid"></p>
+      <p class="result-guesses" id="result-guesses"></p>
+
+      <button type="button" class="share-button" id="share-button">Share</button>
+
+      <div class="stats">
+        <div class="stat"><span class="stat-value" id="stat-played">0</span><span class="stat-label">Played</span></div>
+        <div class="stat"><span class="stat-value" id="stat-winpct">0</span><span class="stat-label">Win %</span></div>
+        <div class="stat"><span class="stat-value" id="stat-streak">0</span><span class="stat-label">Current streak</span></div>
+        <div class="stat"><span class="stat-value" id="stat-best">0</span><span class="stat-label">Best streak</span></div>
+      </div>
+
+      <p class="countdown-label">Next character in</p>
+      <p class="countdown" id="countdown">--:--:--</p>
+    </section>
+
+    <div class="toast hidden" id="toast" role="status"></div>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

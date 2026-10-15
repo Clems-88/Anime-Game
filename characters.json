@@ -1,0 +1,242 @@
+[
+  {
+    "name": "Naruto Uzumaki",
+    "anime": "Naruto",
+    "clues": [
+      "Grew up an orphan shunned by his village",
+      "Dreams of becoming his village's leader",
+      "His signature move creates many copies of himself",
+      "Has the Nine-Tailed Fox sealed inside him"
+    ]
+  },
+  {
+    "name": "Kakashi Hatake",
+    "anime": "Naruto",
+    "clues": [
+      "Almost always reading the same book series",
+      "Famous for showing up late",
+      "Leads a team of three young ninja",
+      "Wears a mask and has a Sharingan eye"
+    ]
+  },
+  {
+    "name": "Itachi Uchiha",
+    "anime": "Naruto",
+    "clues": [
+      "A calm, quiet older brother",
+      "Wears the cloak of a feared rogue organisation",
+      "Master of illusion techniques",
+      "Sasuke's older brother"
+    ]
+  },
+  {
+    "name": "Gaara",
+    "anime": "Naruto",
+    "clues": [
+      "Has the symbol for \"love\" on his forehead",
+      "Carries a large gourd on his back",
+      "Controls sand",
+      "Later becomes the Kazekage"
+    ]
+  },
+  {
+    "name": "Eren Yeager",
+    "anime": "Attack on Titan",
+    "clues": [
+      "Saw his mother killed when the wall fell",
+      "Swore to wipe out every Titan",
+      "Can transform into a Titan",
+      "Grew up with Mikasa and Armin"
+    ]
+  },
+  {
+    "name": "Levi Ackerman",
+    "anime": "Attack on Titan",
+    "clues": [
+      "Holds his teacup by the rim",
+      "Obsessed with cleanliness",
+      "Captain of a special squad in the Survey Corps",
+      "Called humanity's strongest soldier"
+    ]
+  },
+  {
+    "name": "Mikasa Ackerman",
+    "anime": "Attack on Titan",
+    "clues": [
+      "Never takes off her red scarf",
+      "Finished top of her training class",
+      "Fiercely protective of the boy she grew up with",
+      "Raised alongside Eren and Armin"
+    ]
+  },
+  {
+    "name": "Armin Arlert",
+    "anime": "Attack on Titan",
+    "clues": [
+      "Physically weak but a brilliant strategist",
+      "Has always dreamed of seeing the ocean",
+      "Blond and soft-spoken",
+      "Eren's childhood best friend"
+    ]
+  },
+  {
+    "name": "Tanjiro Kamado",
+    "anime": "Demon Slayer",
+    "clues": [
+      "Has an incredibly sharp sense of smell",
+      "Has a scar on his forehead",
+      "Uses Water Breathing",
+      "Became a demon slayer to cure his sister"
+    ]
+  },
+  {
+    "name": "Nezuko Kamado",
+    "anime": "Demon Slayer",
+    "clues": [
+      "Keeps a bamboo muzzle in her mouth",
+      "Travels in a wooden box during the day",
+      "A demon who refuses to eat humans",
+      "Tanjiro's younger sister"
+    ]
+  },
+  {
+    "name": "Zenitsu Agatsuma",
+    "anime": "Demon Slayer",
+    "clues": [
+      "Constantly crying and terrified",
+      "Fights best when he's asleep",
+      "Only mastered one Thunder Breathing technique",
+      "Tanjiro's yellow-haired companion"
+    ]
+  },
+  {
+    "name": "Inosuke Hashibira",
+    "anime": "Demon Slayer",
+    "clues": [
+      "Raised by wild boars",
+      "Wears a boar's head as a mask",
+      "Fights with two jagged swords",
+      "Uses his own Beast Breathing"
+    ]
+  },
+  {
+    "name": "Kyojuro Rengoku",
+    "anime": "Demon Slayer",
+    "clues": [
+      "Loves sweet potatoes and shouts \"umai!\" while eating",
+      "Has flame-like hair",
+      "Is the Flame Hashira",
+      "Fights on board the Mugen Train"
+    ]
+  },
+  {
+    "name": "Satoru Gojo",
+    "anime": "Jujutsu Kaisen",
+    "clues": [
+      "Usually wears a blindfold",
+      "Teaches at Tokyo Jujutsu High",
+      "Has the Six Eyes and the Limitless technique",
+      "Called the strongest sorcerer of his time"
+    ]
+  },
+  {
+    "name": "Yuji Itadori",
+    "anime": "Jujutsu Kaisen",
+    "clues": [
+      "An unusually athletic high schooler",
+      "Swallowed a cursed finger",
+      "Became the vessel for a powerful curse",
+      "Shares his body with Sukuna"
+    ]
+  },
+  {
+    "name": "Megumi Fushiguro",
+    "anime": "Jujutsu Kaisen",
+    "clues": [
+      "Serious, with spiky black hair",
+      "Summons creatures using hand shadows",
+      "Uses the Ten Shadows technique",
+      "One of Yuji's first-year classmates"
+    ]
+  },
+  {
+    "name": "Ryomen Sukuna",
+    "anime": "Jujutsu Kaisen",
+    "clues": [
+      "In his true form he has four arms",
+      "His remains were scattered as twenty fingers",
+      "Lives inside Yuji Itadori",
+      "Known as the King of Curses"
+    ]
+  },
+  {
+    "name": "Monkey D. Luffy",
+    "anime": "One Piece",
+    "clues": [
+      "Absolutely loves meat",
+      "His body stretches like rubber",
+      "Captain of the Straw Hat Pirates",
+      "Wants to become King of the Pirates"
+    ]
+  },
+  {
+    "name": "Roronoa Zoro",
+    "anime": "One Piece",
+    "clues": [
+      "Has a terrible sense of direction",
+      "Has green hair",
+      "Fights with three swords, one in his mouth",
+      "Wants to be the world's greatest swordsman"
+    ]
+  },
+  {
+    "name": "Nami",
+    "anime": "One Piece",
+    "clues": [
+      "Loves tangerines",
+      "Loves money even more",
+      "Dreams of drawing a map of the whole world",
+      "Navigator of the Straw Hat Pirates"
+    ]
+  },
+  {
+    "name": "Tony Tony Chopper",
+    "anime": "One Piece",
+    "clues": [
+      "Loves cotton candy",
+      "Is the ship's doctor",
+      "Has a blue nose",
+      "A reindeer who ate the Human-Human Fruit"
+    ]
+  },
+  {
+    "name": "Goku",
+    "anime": "Dragon Ball",
+    "clues": [
+      "Born on another planet but raised on Earth",
+      "Had a tail as a child",
+      "His signature attack is the Kamehameha",
+      "A Saiyan whose birth name is Kakarot"
+    ]
+  },
+  {
+    "name": "Vegeta",
+    "anime": "Dragon Ball",
+    "clues": [
+      "Extremely proud and hates losing",
+      "Goku's lifelong rival",
+      "Royalty from a destroyed planet",
+      "Calls himself the Prince of all Saiyans"
+    ]
+  },
+  {
+    "name": "Piccolo",
+    "anime": "Dragon Ball",
+    "clues": [
+      "Started as an enemy, became a trusted ally",
+      "Became Gohan's teacher",
+      "Can regrow lost limbs",
+      "A green-skinned Namekian"
+    ]
+  }
+]
