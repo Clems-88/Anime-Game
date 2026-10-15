@@ -36,12 +36,13 @@ To test on your phone, make sure it is on the same Wi-Fi and open `http://<your-
 
 ## Add characters
 
-Open `characters.json` and add an entry to the list:
+Open `characters.json` and add an entry **at the end of the list** (before the final `]`, with a comma after the previous entry):
 
 ```json
 {
   "name": "Character Name",
   "anime": "Anime Title",
+  "added": "2026-11-02",
   "clues": [
     "Hardest clue",
     "Harder clue",
@@ -51,21 +52,32 @@ Open `characters.json` and add an entry to the list:
 }
 ```
 
+- **`added` is required for every new character.** Set it to today's date (UTC, written `YYYY-MM-DD`). The character can only be picked from the **day after** that date, so today's puzzle and every past puzzle stay exactly the same.
+- Never use a date in the past for `added`. That would rewrite puzzles people have already played.
+- The 24 launch characters have no `added` date. Only they may leave it out.
 - Every character needs exactly 4 clues, hardest first.
 - Names must be unique (they power the autocomplete).
 - Write the anime title the same way each time (e.g. always `"One Piece"`), so the game knows which characters share a show.
 - Text clues only. Don't add images, official artwork or logos.
+- Fixing a typo in a clue is fine. **Don't rename or delete characters** once the game is live, because that changes past puzzles.
 
-The daily order is a fixed shuffle that keeps characters from the same anime apart. It's rebuilt from the whole list, so **adding characters changes which character appears on future days** (and can change today's). Add new ones shortly after UTC midnight if you want to avoid changing a puzzle people are mid-way through.
+### How the daily schedule works
+
+The game works out the character for each day in order, starting from launch day:
+
+- Every character is used once before any character repeats. Then it loops around.
+- Two characters from the same anime never come up back to back.
+- A new character joins the rotation from the day after its `added` date and comes up at some point in the following days.
+- Each day's pick depends only on the characters that existed on that day, so adding characters only ever affects future days.
 
 ## Settings
 
 At the top of `game.js`:
 
-- `GAME_NAME` – the name shown in the share text.
-- `SITE_URL` – the link on the second line of the share text. **Replace the placeholder** once you deploy.
-- `LAUNCH_DATE` – the UTC date of puzzle #1. Set this to your real launch day.
-- `SHUFFLE_SEED` – change it for a different daily order.
+- `GAME_NAME`: the name shown in the share text.
+- `SITE_URL`: the link on the second line of the share text.
+- `LAUNCH_DATE`: the UTC date of puzzle #1.
+- `SHUFFLE_SEED`: picks the daily order. **Don't change it after launch**, because it would change past puzzles.
 
 To rename the game, also change the `<title>` and the logo in `index.html`.
 

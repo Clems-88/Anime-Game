@@ -1,8 +1,8 @@
 // ===== Settings (edit these) =====
 const GAME_NAME = "AniGuess";
-const SITE_URL = "https://example.com"; // placeholder: replace with your real site link
+const SITE_URL = "https://clems-88.github.io/Anime-Game/";
 const LAUNCH_DATE = "2026-10-15";       // puzzle #1 is on this date (UTC)
-const SHUFFLE_SEED = 12345;             // change to get a different daily order
+const SHUFFLE_SEED = 12345;             // never change after launch: it would change past puzzles
 
 const NUM_CLUES = 4;
 const MAX_GUESSES = 5; // 4 clues + 1 final guess with the anime revealed
@@ -42,41 +42,57 @@ function seededRandom(seed) {
   };
 }
 
-function shuffle(list, rand) {
-  const a = list.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+// The day index (0 = launch day) from which a character can be picked.
+// Launch characters have no "added" date. Characters with an "added" date
+// are only eligible from the day AFTER it, so adding one never changes
+// today's puzzle or any earlier one.
+function firstEligibleDay(c, launch) {
+  if (!c.added) return 0;
+  const added = Date.parse(c.added + "T00:00:00Z");
+  if (isNaN(added)) {
+    console.warn(`Ignoring ${c.name}: "added" should look like "2026-11-02"`);
+    return Infinity;
   }
-  return a;
+  return Math.max(0, Math.floor((added - launch) / DAY_MS) + 1);
 }
 
-// Builds a fixed, shuffled order where two characters from the same anime
-// are never back to back (as long as the data makes that possible).
-function buildDailyOrder(characters) {
-  const rand = seededRandom(SHUFFLE_SEED);
-  const groups = {};
-  for (const c of characters) {
-    (groups[c.anime] = groups[c.anime] || []).push(c);
-  }
-  const pools = shuffle(Object.keys(groups).sort(), rand).map(anime => ({
-    anime,
-    items: shuffle(groups[anime], rand),
-  }));
+// Works out the character for every day from launch up to dayIndex, one day
+// at a time. Each day's pick depends only on the characters that were
+// eligible on that day and the days before it, so past puzzles never change.
+// Rules: every eligible character is used once before any repeats (a
+// "cycle"), and two characters from the same anime are never back to back.
+function characterForDay(characters, dayIndex) {
+  const launch = Date.parse(LAUNCH_DATE + "T00:00:00Z");
+  const all = characters
+    .map(c => ({ c, from: firstEligibleDay(c, launch) }))
+    .sort((a, b) => a.c.name.localeCompare(b.c.name)); // file order doesn't matter
 
-  const order = [];
-  let lastAnime = null;
-  while (order.length < characters.length) {
-    let options = pools.filter(p => p.items.length > 0 && p.anime !== lastAnime);
-    if (options.length === 0) options = pools.filter(p => p.items.length > 0);
-    // Prefer the anime with the most characters left, so we don't get stuck at the end.
-    const most = Math.max(...options.map(p => p.items.length));
-    const best = options.filter(p => p.items.length === most);
-    const pick = best[Math.floor(rand() * best.length)];
-    order.push(pick.items.pop());
-    lastAnime = pick.anime;
+  const used = new Set();
+  let prev = null;
+  for (let d = 0; d <= dayIndex; d++) {
+    const eligible = all.filter(x => x.from <= d).map(x => x.c);
+    const differentAnime = list => list.filter(c => !prev || c.anime !== prev.anime);
+
+    let options = differentAnime(eligible.filter(c => !used.has(c.name)));
+    if (options.length === 0) {
+      // Cycle finished (or only yesterday's anime is left): start a new cycle.
+      used.clear();
+      options = differentAnime(eligible);
+      if (options.length === 0) options = eligible; // only one anime exists
+    }
+
+    // Prefer the anime with the most unused characters left, so a cycle
+    // doesn't end with several characters from the same show.
+    const left = {};
+    for (const c of options) left[c.anime] = (left[c.anime] || 0) + 1;
+    const most = Math.max(...Object.values(left));
+    const best = options.filter(c => left[c.anime] === most);
+
+    const rand = seededRandom(SHUFFLE_SEED * 100003 + d);
+    prev = best[Math.floor(rand() * best.length)];
+    used.add(prev.name);
   }
-  return order;
+  return prev;
 }
 
 function todayIndex() {
@@ -104,9 +120,8 @@ async function init() {
     return;
   }
 
-  const order = buildDailyOrder(characters);
   const index = todayIndex();
-  answer = order[index % order.length];
+  answer = characterForDay(characters, index);
   puzzleNumber = index + 1;
 
   stats = load(STATS_KEY, { played: 0, wins: 0, currentStreak: 0, bestStreak: 0, lastWonPuzzle: null });
