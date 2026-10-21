@@ -1,7 +1,7 @@
 // ===== Settings (edit these) =====
 const GAME_NAME = "AniGuess";
 const SITE_URL = "https://clems-88.github.io/Anime-Game/";
-const LAUNCH_DATE = "2026-10-15";       // puzzle #1 is on this date (UTC)
+const LAUNCH_DATE = "2026-10-21";       // puzzle #1 is on this date (UTC)
 const SHUFFLE_SEED = 12345;             // never change after launch: it would change past puzzles
 
 const NUM_CLUES = 4;
