@@ -12,6 +12,9 @@ Plain HTML, CSS and JavaScript. No backend, no build step.
 | `style.css` | The look |
 | `game.js` | The game logic |
 | `characters.json` | The character list (edit this to add characters) |
+| `mascot.svg` | Kitsu, the original fox-spirit mascot (used in the logo) |
+| `favicon.svg`, `favicon-32.png`, `apple-touch-icon.png` | Browser tab and home-screen icons |
+| `og-image.png` | The 1200×630 picture shown in WhatsApp/social link previews |
 
 ## Run it locally
 
@@ -83,7 +86,7 @@ To rename the game, also change the `<title>` and the logo in `index.html`.
 
 ## Deploy (free)
 
-It's a static site: upload the four files and you're done.
+It's a static site: upload all the files in this folder and you're done.
 
 **GitHub Pages**
 1. Push this repo to GitHub.

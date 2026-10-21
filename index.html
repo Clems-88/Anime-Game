@@ -3,16 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0d0b1e">
-  <title>AniGuess</title>
+  <meta name="theme-color" content="#0b0820">
+  <title>AniGuess – Guess today's anime character</title>
+  <meta name="description" content="Can you guess today's anime character? A new mystery character every day. 4 clues, 5 guesses.">
+
+  <!-- Link previews (WhatsApp, Facebook, X/Twitter, Discord…) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AniGuess">
+  <meta property="og:url" content="https://clems-88.github.io/Anime-Game/">
+  <meta property="og:title" content="AniGuess – Guess today's anime character">
+  <meta property="og:description" content="Can you guess today's anime character? A new mystery character every day. 4 clues, 5 guesses.">
+  <meta property="og:image" content="https://clems-88.github.io/Anime-Game/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AniGuess logo with a cute fox-spirit mascot: Can you guess today's anime character?">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AniGuess – Guess today's anime character">
+  <meta name="twitter:description" content="Can you guess today's anime character? A new mystery character every day. 4 clues, 5 guesses.">
+  <meta name="twitter:image" content="https://clems-88.github.io/Anime-Game/og-image.png">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@600;800;900&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <canvas id="petals" aria-hidden="true"></canvas>
+  <div class="speed-lines" aria-hidden="true"></div>
+
   <main class="app">
     <header class="header">
-      <h1 class="logo">Ani<span>Guess</span></h1>
+      <h1 class="logo">
+        <img class="logo-mascot" src="mascot.svg" alt="" width="56" height="56">
+        <span class="logo-text">Ani<span>Guess</span></span>
+      </h1>
       <p class="puzzle-number" id="puzzle-number"></p>
     </header>
+
+    <div class="mascot-row">
+      <!-- Kitsu, the AniGuess fox spirit (original character) -->
+      <svg class="mascot" id="mascot" data-mood="curious" viewBox="0 0 160 160" aria-hidden="true">
+        <g class="tail">
+          <path d="M104 138 C146 140 158 104 146 74 C140 60 128 54 122 62 C134 84 128 112 98 124 Z" fill="#ff8a3d" stroke="#1a0f2e" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M146 74 C140 60 128 54 122 62 C128 70 131 78 132 86 C138 80 143 77 146 74 Z" fill="#7ff6ff" stroke="#1a0f2e" stroke-width="4" stroke-linejoin="round"/>
+        </g>
+        <ellipse cx="80" cy="134" rx="30" ry="20" fill="#ff8a3d" stroke="#1a0f2e" stroke-width="4"/>
+        <ellipse cx="80" cy="139" rx="16" ry="12" fill="#fff3e6"/>
+        <g class="ear ear-l">
+          <path d="M44 64 L34 14 L72 44 Z" fill="#ff8a3d" stroke="#1a0f2e" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M46 54 L41 27 L62 44 Z" fill="#ff5fa8"/>
+        </g>
+        <g class="ear ear-r">
+          <path d="M116 64 L126 14 L88 44 Z" fill="#ff8a3d" stroke="#1a0f2e" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M114 54 L119 27 L98 44 Z" fill="#ff5fa8"/>
+        </g>
+        <ellipse cx="80" cy="80" rx="48" ry="41" fill="#ff8a3d" stroke="#1a0f2e" stroke-width="4"/>
+        <path d="M36 92 C46 116 114 116 124 92 C110 104 96 96 80 104 C64 96 50 104 36 92 Z" fill="#fff3e6"/>
+        <path d="M80 46 L85 54 L80 62 L75 54 Z" fill="#00e5ff"/>
+        <ellipse cx="51" cy="95" rx="7" ry="4" fill="#ff5fa8" opacity="0.55"/>
+        <ellipse cx="109" cy="95" rx="7" ry="4" fill="#ff5fa8" opacity="0.55"/>
+        <ellipse cx="80" cy="93" rx="4.5" ry="3.2" fill="#1a0f2e"/>
+
+        <g class="face face-curious">
+          <ellipse cx="62" cy="80" rx="9" ry="11.5" fill="#1a0f2e"/>
+          <ellipse cx="98" cy="80" rx="9" ry="11.5" fill="#1a0f2e"/>
+          <circle cx="65" cy="75" r="3.6" fill="#fff"/><circle cx="101" cy="75" r="3.6" fill="#fff"/>
+          <circle cx="59" cy="85" r="1.6" fill="#7ff6ff"/><circle cx="95" cy="85" r="1.6" fill="#7ff6ff"/>
+          <circle cx="80" cy="103" r="3.4" fill="#1a0f2e"/>
+          <text x="134" y="34" class="mascot-mark">?</text>
+        </g>
+        <g class="face face-nervous">
+          <ellipse cx="62" cy="81" rx="7.5" ry="8.5" fill="#1a0f2e"/>
+          <ellipse cx="98" cy="81" rx="7.5" ry="8.5" fill="#1a0f2e"/>
+          <circle cx="60" cy="78" r="2.6" fill="#fff"/><circle cx="96" cy="78" r="2.6" fill="#fff"/>
+          <path d="M54 70 L68 65 M106 70 L92 65" stroke="#1a0f2e" stroke-width="3" stroke-linecap="round"/>
+          <path d="M70 104 q5 -4 10 0 t10 0" fill="none" stroke="#1a0f2e" stroke-width="3" stroke-linecap="round"/>
+          <path d="M128 48 C122 58 122 64 128 64 C134 64 134 58 128 48 Z" fill="#7ff6ff" stroke="#1a0f2e" stroke-width="2"/>
+        </g>
+        <g class="face face-happy">
+          <path d="M53 83 q9 -12 18 0 M89 83 q9 -12 18 0" fill="none" stroke="#1a0f2e" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M68 100 q12 18 24 0 z" fill="#1a0f2e" stroke="#1a0f2e" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M74 106 q6 5 12 0 q-6 -3 -12 0 z" fill="#ff5fa8"/>
+          <path d="M22 30 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3 z M138 26 l2.5 6 l6 2.5 l-6 2.5 l-2.5 6 l-2.5 -6 l-6 -2.5 l6 -2.5 z" fill="#ffe14d"/>
+        </g>
+        <g class="face face-sad">
+          <path d="M53 78 q9 7 18 0 M89 78 q9 7 18 0" fill="none" stroke="#1a0f2e" stroke-width="4" stroke-linecap="round"/>
+          <path d="M72 108 q8 -8 16 0" fill="none" stroke="#1a0f2e" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M58 84 C54 92 54 96 58 96 C62 96 62 92 58 84 Z" fill="#7ff6ff" stroke="#1a0f2e" stroke-width="1.5"/>
+        </g>
+      </svg>
+      <p class="bubble" id="bubble">Who could it be…?</p>
+    </div>
 
     <p class="loading" id="loading">Loading…</p>
 
@@ -28,7 +114,7 @@
                  autocapitalize="off" spellcheck="false">
           <ul class="suggestions hidden" id="suggestions" role="listbox"></ul>
         </div>
-        <button type="submit" id="guess-button" disabled>Guess</button>
+        <button type="submit" class="btn btn-guess" id="guess-button" disabled>Guess</button>
       </form>
 
       <ul class="past-guesses" id="past-guesses"></ul>
@@ -41,7 +127,7 @@
       <p class="result-grid" id="result-grid"></p>
       <p class="result-guesses" id="result-guesses"></p>
 
-      <button type="button" class="share-button" id="share-button">Share</button>
+      <button type="button" class="btn share-button" id="share-button">Share</button>
 
       <div class="stats">
         <div class="stat"><span class="stat-value" id="stat-played">0</span><span class="stat-label">Played</span></div>
@@ -56,6 +142,10 @@
 
     <div class="toast hidden" id="toast" role="status"></div>
   </main>
+
+  <div class="flash" id="flash" aria-hidden="true"></div>
+  <div class="banner hidden" id="banner" aria-hidden="true"><span id="banner-text"></span></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
 
   <script src="game.js"></script>
 </body>

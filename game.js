@@ -153,6 +153,11 @@ function makeGuess(name) {
   }
   save(STATE_KEY, state);
   render();
+
+  // Visual effects only
+  if (state.status === "won") celebrateWin();
+  else if (state.status === "lost") showLoss();
+  else wrongGuessFx();
 }
 
 function finish(won) {
@@ -177,6 +182,7 @@ function render() {
     $("game").classList.add("hidden");
     renderResult();
   }
+  updateMascot();
 }
 
 function renderGame() {
@@ -185,14 +191,17 @@ function renderGame() {
 
   const left = MAX_GUESSES - wrong;
   $("guesses-left").textContent = left === 1 ? "Final guess!" : `${left} guesses left`;
+  $("guesses-left").classList.toggle("final", left === 1);
 
   const clueList = $("clues");
   const shown = Math.min(wrong + 1, NUM_CLUES);
   // Only add new clues so earlier ones don't re-animate.
+  const firstNew = clueList.children.length;
   while (clueList.children.length < shown) {
     const i = clueList.children.length;
     const li = document.createElement("li");
     li.className = "clue";
+    li.style.animationDelay = `${(i - firstNew) * 150}ms`; // stagger when several appear at once
     li.innerHTML = `<span class="clue-label">Clue ${i + 1}</span>`;
     li.append(answer.clues[i]);
     clueList.appendChild(li);
@@ -230,6 +239,7 @@ function renderResult() {
   const title = $("result-title");
   title.textContent = won ? "You got it!" : "Not this time";
   title.classList.toggle("lost", !won);
+  $("result").classList.toggle("lost", !won);
   $("result-name").textContent = answer.name;
   $("result-anime").textContent = answer.anime;
   $("result-grid").textContent = shareGrid();
@@ -388,4 +398,174 @@ function setupInput() {
   });
 }
 
+// ===== Visual effects (no game logic below this line) =====
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const BUBBLE_LINES = {
+  curious: "Who could it be…?",
+  nervous: ["Eep! Not them!", "Hmm… not quite!", "So close… maybe?", "Don't give up!"],
+  final: "Last chance! You've got this!",
+  happy: "SUGOI! You got it!",
+  sad: "Aww… see you tomorrow!",
+};
+
+function updateMascot() {
+  const wrong = state.guesses.length;
+  let mood, line;
+  if (state.status === "won") { mood = "happy"; line = BUBBLE_LINES.happy; }
+  else if (state.status === "lost") { mood = "sad"; line = BUBBLE_LINES.sad; }
+  else if (wrong === 0) { mood = "curious"; line = BUBBLE_LINES.curious; }
+  else {
+    mood = "nervous";
+    line = wrong >= NUM_CLUES ? BUBBLE_LINES.final : BUBBLE_LINES.nervous[(wrong - 1) % BUBBLE_LINES.nervous.length];
+  }
+  $("mascot").setAttribute("data-mood", mood);
+  const bubble = $("bubble");
+  if (bubble.textContent !== line) {
+    bubble.textContent = line;
+    restartClass(bubble, "pop");
+  }
+}
+
+// Re-trigger a CSS animation class.
+function restartClass(el, cls) {
+  el.classList.remove(cls);
+  void el.offsetWidth;
+  el.classList.add(cls);
+}
+
+function wrongGuessFx() {
+  restartClass($("game"), "shake");
+  restartClass($("flash"), "on");
+  restartClass($("mascot"), "jitter");
+  if (navigator.vibrate && !reduceMotion) navigator.vibrate(120);
+}
+
+let bannerTimer = null;
+function showBanner(text, cls, ms) {
+  const banner = $("banner");
+  $("banner-text").textContent = text;
+  banner.className = "banner " + cls;
+  const hide = () => banner.classList.add("hidden");
+  banner.onclick = hide;
+  clearTimeout(bannerTimer);
+  bannerTimer = setTimeout(hide, ms);
+}
+
+function celebrateWin() {
+  showBanner("SUGOI!", "win", 2300);
+  confetti();
+}
+
+function showLoss() {
+  restartClass($("flash"), "on");
+  showBanner("Not this time…", "lose", 2500);
+}
+
+function confetti() {
+  if (reduceMotion) return;
+  const canvas = $("confetti");
+  const ctx = canvas.getContext("2d");
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const W = window.innerWidth, H = window.innerHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+  const colors = ["#ff2e88", "#00e5ff", "#ffe14d", "#ffffff", "#2bff88"];
+  const parts = [];
+  for (let i = 0; i < 160; i++) {
+    const fromLeft = i % 2 === 0;
+    parts.push({
+      x: fromLeft ? -10 : W + 10,
+      y: H * 0.65,
+      vx: (fromLeft ? 1 : -1) * (4 + Math.random() * 9),
+      vy: -(9 + Math.random() * 11),
+      size: 6 + Math.random() * 7,
+      rot: Math.random() * Math.PI,
+      vr: (Math.random() - 0.5) * 0.4,
+      color: colors[i % colors.length],
+    });
+  }
+  const start = performance.now();
+  function frame(t) {
+    const elapsed = t - start;
+    ctx.clearRect(0, 0, W, H);
+    for (const p of parts) {
+      p.vy += 0.32;
+      p.vx *= 0.985;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.globalAlpha = Math.max(0, 1 - elapsed / 3200);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      ctx.restore();
+    }
+    if (elapsed < 3200) requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, W, H);
+  }
+  requestAnimationFrame(frame);
+}
+
+// Slowly drifting sakura petals in the background (drawn, no images).
+function startPetals() {
+  if (reduceMotion) return;
+  const canvas = $("petals");
+  const ctx = canvas.getContext("2d");
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let W, H;
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  const petals = Array.from({ length: 18 }, () => ({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    s: 5 + Math.random() * 7,
+    vy: 0.3 + Math.random() * 0.6,
+    vx: 0.2 + Math.random() * 0.5,
+    rot: Math.random() * Math.PI * 2,
+    vr: (Math.random() - 0.5) * 0.02,
+    sway: Math.random() * Math.PI * 2,
+  }));
+
+  function frame() {
+    if (!document.hidden) {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of petals) {
+        p.sway += 0.015;
+        p.y += p.vy;
+        p.x += p.vx + Math.sin(p.sway) * 0.4;
+        p.rot += p.vr;
+        if (p.y > H + 20) { p.y = -20; p.x = Math.random() * W; }
+        if (p.x > W + 20) p.x = -20;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.scale(1, 0.6 + 0.4 * Math.abs(Math.sin(p.sway)));
+        ctx.globalAlpha = 0.55;
+        ctx.fillStyle = "#ff9ecb";
+        ctx.beginPath();
+        ctx.moveTo(0, -p.s);
+        ctx.bezierCurveTo(p.s, -p.s, p.s, p.s * 0.6, 0, p.s);
+        ctx.bezierCurveTo(-p.s, p.s * 0.6, -p.s, -p.s, 0, -p.s);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+startPetals();
 init();
