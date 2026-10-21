@@ -5,9 +5,11 @@ const LAUNCH_DATE = "2026-10-21";       // puzzle #1 is on this date (UTC)
 const SHUFFLE_SEED = 12345;             // never change after launch: it would change past puzzles
 
 const NUM_CLUES = 4;
+const REVEAL_ANIME_AFTER = 2; // wrong guesses before the anime is revealed
 const MAX_GUESSES = 5; // 4 clues + 1 final guess with the anime revealed
 const STATE_KEY = "aniguess-state";
 const STATS_KEY = "aniguess-stats";
+const HELP_KEY = "aniguess-seen-help";
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 // ===== Storage helpers (localStorage may be blocked) =====
@@ -137,6 +139,7 @@ async function init() {
   }
 
   $("puzzle-number").textContent = `${GAME_NAME} #${puzzleNumber}`;
+  renderShows();
   $("loading").classList.add("hidden");
   setupInput();
   render();
@@ -208,7 +211,7 @@ function renderGame() {
   }
 
   const reveal = $("anime-reveal");
-  if (wrong >= NUM_CLUES) {
+  if (wrong >= REVEAL_ANIME_AFTER) {
     reveal.innerHTML = `<span class="clue-label">This character is from</span>`;
     reveal.append(answer.anime);
     reveal.classList.remove("hidden");
@@ -313,6 +316,7 @@ function setupInput() {
   const list = $("suggestions");
   const button = $("guess-button");
   const allNames = characters.map(c => c.name).sort((a, b) => a.localeCompare(b));
+  const animeOf = Object.fromEntries(characters.map(c => [c.name, c.anime]));
   let matches = [];
   let active = -1;
 
@@ -339,6 +343,10 @@ function setupInput() {
     matches.forEach((name, i) => {
       const li = document.createElement("li");
       li.textContent = name;
+      const anime = document.createElement("span");
+      anime.className = "suggestion-anime";
+      anime.textContent = ` — ${animeOf[name]}`;
+      li.appendChild(anime);
       li.setAttribute("role", "option");
       // mousedown fires before the input loses focus
       li.addEventListener("mousedown", e => {
@@ -398,6 +406,40 @@ function setupInput() {
   });
 }
 
+// ===== Shows list (built from characters.json) =====
+function renderShows() {
+  const shows = [...new Set(characters.map(c => c.anime))];
+  const list = $("show-tags");
+  list.innerHTML = "";
+  for (const show of shows) {
+    const li = document.createElement("li");
+    li.textContent = show;
+    list.appendChild(li);
+  }
+  $("shows").classList.remove("hidden");
+}
+
+// ===== How to Play popup =====
+function openHelp() {
+  $("help").classList.remove("hidden");
+  $("help-close").focus();
+}
+
+function closeHelp() {
+  if ($("help").classList.contains("hidden")) return;
+  $("help").classList.add("hidden");
+  save(HELP_KEY, true);
+  $("help-button").focus();
+}
+
+function setupHelp() {
+  $("help-button").addEventListener("click", openHelp);
+  $("help-close").addEventListener("click", closeHelp);
+  $("help").addEventListener("click", e => { if (e.target === $("help")) closeHelp(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeHelp(); });
+  if (!load(HELP_KEY, false)) openHelp(); // first visit only
+}
+
 // ===== Visual effects (no game logic below this line) =====
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -405,6 +447,7 @@ const BUBBLE_LINES = {
   curious: "Who could it be…?",
   nervous: ["Eep! Not them!", "Hmm… not quite!", "So close… maybe?", "Don't give up!"],
   final: "Last chance! You've got this!",
+  reveal: "Hint unlocked: the anime!",
   happy: "SUGOI! You got it!",
   sad: "Aww… see you tomorrow!",
 };
@@ -417,7 +460,9 @@ function updateMascot() {
   else if (wrong === 0) { mood = "curious"; line = BUBBLE_LINES.curious; }
   else {
     mood = "nervous";
-    line = wrong >= NUM_CLUES ? BUBBLE_LINES.final : BUBBLE_LINES.nervous[(wrong - 1) % BUBBLE_LINES.nervous.length];
+    if (wrong >= MAX_GUESSES - 1) line = BUBBLE_LINES.final;
+    else if (wrong === REVEAL_ANIME_AFTER) line = BUBBLE_LINES.reveal;
+    else line = BUBBLE_LINES.nervous[(wrong - 1) % BUBBLE_LINES.nervous.length];
   }
   $("mascot").setAttribute("data-mood", mood);
   const bubble = $("bubble");
@@ -568,4 +613,5 @@ function startPetals() {
 }
 
 startPetals();
+setupHelp();
 init();

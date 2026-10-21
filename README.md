@@ -35,6 +35,7 @@ To test on your phone, make sure it is on the same Wi-Fi and open `http://<your-
 ### Testing tips
 
 - **Play again today:** your progress is saved in the browser. To reset, open DevTools → Application → Local Storage and delete `aniguess-state` (today's game) and/or `aniguess-stats` (your stats). Or use a private/incognito window.
+- **See the How to Play popup again as a new player:** delete `aniguess-seen-help` the same way (or use a private window). Anyone can also reopen it with the **?** button.
 - **Check another day's character:** change your computer's clock (the game uses the UTC date).
 
 ## Add characters

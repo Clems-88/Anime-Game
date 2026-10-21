@@ -38,11 +38,16 @@
 
   <main class="app">
     <header class="header">
+      <button type="button" class="help-button" id="help-button" aria-label="How to play">?</button>
       <h1 class="logo">
         <img class="logo-mascot" src="mascot.svg" alt="" width="56" height="56">
         <span class="logo-text">Ani<span>Guess</span></span>
       </h1>
       <p class="puzzle-number" id="puzzle-number"></p>
+      <div class="shows hidden" id="shows">
+        <p class="shows-label">Today's character is from one of:</p>
+        <ul class="show-tags" id="show-tags"></ul>
+      </div>
     </header>
 
     <div class="mascot-row">
@@ -142,6 +147,20 @@
 
     <div class="toast hidden" id="toast" role="status"></div>
   </main>
+
+  <div class="help-overlay hidden" id="help" role="dialog" aria-modal="true" aria-labelledby="help-title">
+    <div class="help-card">
+      <img class="help-mascot" src="mascot.svg" alt="" width="110" height="110">
+      <h2 class="help-title" id="help-title">How to play</h2>
+      <ul class="help-rules">
+        <li><span class="help-icon">🎯</span>Guess today's anime character in 5 tries.</li>
+        <li><span class="help-icon">🔓</span>Each wrong guess unlocks a new clue.</li>
+        <li><span class="help-icon">📺</span>Stuck? We'll reveal which anime they're from.</li>
+        <li><span class="help-icon">🌸</span>New character every day!</li>
+      </ul>
+      <button type="button" class="btn help-close" id="help-close">Let's go!</button>
+    </div>
+  </div>
 
   <div class="flash" id="flash" aria-hidden="true"></div>
   <div class="banner hidden" id="banner" aria-hidden="true"><span id="banner-text"></span></div>
